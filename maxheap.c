@@ -42,7 +42,7 @@ static void maxheap_double_capacity(maxheap h) {
 		fprintf(stderr, "Not enough memory!\n");
 		abort();
 	}
-	for(int i = 0; i <= h->cur_size; i++) {
+	for(int i = 0; i < h->cur_size; i++) {
 		new_array[i] = h->array[i];
 	}
 	free(h->array);
@@ -93,9 +93,11 @@ void maxheap_insert(maxheap h, key_type key) {
 
 	// add at the end
 	h->array[h->cur_size] = key;
-	h->cur_size += 1;
+	
 	// restore the heap property by heapify-up
 	maxheap_heapifyup(h, h->cur_size);
+
+	h->cur_size += 1;
 }
 
 int maxheap_findmax(maxheap h) {
@@ -114,9 +116,7 @@ void maxheap_deletemax(maxheap h) {
 		abort();
 	}
 	// swap the first and last element
-	maxheap_swap(h, 0, h->cur_size);
-	
-	h->cur_size--;
+	maxheap_swap(h, 0, --h->cur_size);
 	
 	maxheap_heapifydown(h, 0);
 }
@@ -169,8 +169,8 @@ int main() {
 	
 	maxheap h = maxheap_create();
 
-	for (i=0; i<100; i++) {
-		maxheap_insert(h, rand() % 1000);
+	for (i=0; i<5; i++) {
+		maxheap_insert(h, i);
 	}
 
 	while(!maxheap_is_empty(h)){
@@ -180,188 +180,5 @@ int main() {
 	maxheap_destroy(h);
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
