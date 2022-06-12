@@ -18,7 +18,7 @@ maxheap maxheap_create() {
 		abort();
 	}
 	h->max_size = 64;
-	h->cur_size = 0;
+	h->cur_size = -1;
 	h->array = (key_type*) malloc(sizeof(key_type)*(h->max_size));
 	if (h->array == NULL) {
 		fprintf(stderr, "Not enough memory!\n");
@@ -72,7 +72,7 @@ static void maxheap_heapifydown(maxheap h, int k) {
 	
 	while(2*k <= h->cur_size) {
 		int j = 2*k;
-		if (h->array[j+1] > h->array[j]) {
+		if (j<h->cur_size && h->array[j+1] > h->array[j]) {
 			j++;
 		}
 		if (h->array[k] >= h->array[j]) {
@@ -86,6 +86,7 @@ static void maxheap_heapifydown(maxheap h, int k) {
 void maxheap_insert(maxheap h, key_type key) {
 	assert(h);
 
+	h->cur_size += 1;
 	// make sure there is space
 	if (h->cur_size == h->max_size) {
 		maxheap_double_capacity(h);
@@ -97,7 +98,6 @@ void maxheap_insert(maxheap h, key_type key) {
 	// restore the heap property by heapify-up
 	maxheap_heapifyup(h, h->cur_size);
 
-	h->cur_size += 1;
 }
 
 int maxheap_findmax(maxheap h) {
@@ -116,7 +116,8 @@ void maxheap_deletemax(maxheap h) {
 		abort();
 	}
 	// swap the first and last element
-	maxheap_swap(h, 0, --h->cur_size);
+	maxheap_swap(h, 0, h->cur_size);
+	h->cur_size -= 1;
 	
 	maxheap_heapifydown(h, 0);
 }
@@ -129,12 +130,12 @@ int maxheap_size(maxheap h) {
 
 int maxheap_is_empty(maxheap h) {
 	assert(h);
-	return h->cur_size <= 0;
+	return h->cur_size < 0;
 }
 
 void maxheap_clear(maxheap h) {
 	assert(h);
-	h->cur_size = 0;
+	h->cur_size = -1;
 }
 
 
@@ -147,13 +148,13 @@ maxheap maxheap_heapify(const key_type* array, int n) {
 		abort();
 	}
 	h->max_size = n;
-	h->cur_size = 0;
+	h->cur_size = -1;
 	h->array = (key_type*)(malloc(sizeof(key_type)*h->max_size));
 	if(h->array == NULL) {
 		fprintf(stderr, "Not enough memory!\n");
 		abort();
 	}
-	h->cur_size = n;
+	h->cur_size = n-1;
 	for (int i=0; i< n; i++) {
 		h->array[i] = array[i];
 	}
@@ -169,7 +170,7 @@ int main() {
 	
 	maxheap h = maxheap_create();
 
-	for (i=0; i<5; i++) {
+	for (i=0; i<100; i++) {
 		maxheap_insert(h, i);
 	}
 
